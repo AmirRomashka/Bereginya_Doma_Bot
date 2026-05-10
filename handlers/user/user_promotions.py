@@ -22,7 +22,6 @@ from database.orm_query.dish_orm import get_all_promotion_dishes_orm, get_dish_b
 from keybords.inline import get_callback_btns
 from tools import send_clean_message
 
-# Импортируем стандартный callback для добавления в корзину
 from handlers.user.user_menu import CALLBACK_ADD_TO_CART_PREFIX
 
 
@@ -48,12 +47,12 @@ CALLBACK_BACK_TO_MENU = "back_to_user_menu"
 CALLBACK_MAIN_MENU = "main_menu"
 
 # -----------------------------------------------------------------------------
-# Button text constants
+# Button text constants — понятные и тёплые
 # -----------------------------------------------------------------------------
 BUTTON_TEXT = {
-    "back_to_menu": "🍽 В меню",
+    "back_to_menu": "🍰 В меню",
     "main_menu": "🏠 Главная",
-    "add_to_cart": "🛒 Добавить в корзину",
+    "add_to_cart": "🛒 В корзину",
     "next": "▶️ Следующее",
     "prev": "◀️ Предыдущее"
 }
@@ -69,21 +68,21 @@ DISH_DETAIL_TEMPLATE = """
 
 ━━━━━━━━━━━━━━━━━━━━━
 💰 <b>Цена:</b> {price} ₽
-🍂 <i>Сезонное предложение!</i>
+🍂 <i>Только в этом сезоне! 🍂</i>
 ━━━━━━━━━━━━━━━━━━━━━
 
-<b>{current} из {total}</b> сезонных блюд
+<b>{current} из {total}</b> сезонных новинок
 """
 
-DISH_NO_DESCRIPTION = "Нет описания — но мы уверены, что это будет вкусно!"
+DISH_NO_DESCRIPTION = "Попробуйте — это наш сезонный секрет ✨"
 
 SEASONAL_EMPTY = """
 🌿 <b>Сезонные блюда</b>
 
-Пока нет сезонных предложений.
-Загляните позже — мы готовим для вас кое-что особенное!
+Пока мы готовим для вас что-то особенное.
+Загляните позже — скоро здесь появятся новинки! 🤍
 
-<i>Следите за обновлениями 🤍</i>
+<i>Следите за обновлениями ✨</i>
 """
 
 
@@ -114,31 +113,19 @@ def get_dish_navigation_buttons(
     total: int,
     dish_id: int
 ) -> tuple[Dict[str, str], List[int]]:
-    """
-    Создаёт кнопки навигации для карусели блюд.
-    
-    Args:
-        current_index: текущий индекс (0-based)
-        total: общее количество блюд
-        dish_id: ID текущего блюда
-    
-    Returns:
-        tuple: (словарь кнопок, список размеров)
-    """
+    """Создаёт кнопки навигации для карусели блюд."""
     buttons = {}
     sizes = []
     
-    # ✅ Кнопка "Добавить в корзину" с стандартным callback
     buttons[BUTTON_TEXT["add_to_cart"]] = f"{CALLBACK_ADD_TO_CART_PREFIX}{dish_id}"
     sizes.append(1)
     
-    # Строка навигации
     nav_buttons = {}
     
     if current_index > 0:
         nav_buttons["◀️"] = f"{CALLBACK_PROMO_PREV}{current_index - 1}"
     
-    nav_buttons[f"{current_index + 1}/{total}"] = "pass"  # Пассивная кнопка
+    nav_buttons[f"{current_index + 1}/{total}"] = "pass"
     
     if current_index < total - 1:
         nav_buttons["▶️"] = f"{CALLBACK_PROMO_NEXT}{current_index + 1}"
@@ -146,7 +133,6 @@ def get_dish_navigation_buttons(
     buttons.update(nav_buttons)
     sizes.append(len(nav_buttons) if nav_buttons else 1)
     
-    # Кнопка выхода
     buttons[BUTTON_TEXT["back_to_menu"]] = CALLBACK_BACK_TO_MENU
     buttons[BUTTON_TEXT["main_menu"]] = CALLBACK_MAIN_MENU
     sizes.append(2)
@@ -160,10 +146,7 @@ def get_dish_navigation_buttons(
 
 @UserPromotionsRouter.callback_query(F.data == CALLBACK_USER_PROMOTIONS)
 async def show_seasonal_dishes(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Показывает сезонные блюда в формате карусели.
-    Начинает с первого блюда.
-    """
+    """Показывает сезонные блюда в формате карусели."""
     seasonal_dishes = await get_seasonal_dishes(session)
     
     if not seasonal_dishes:
@@ -179,14 +162,12 @@ async def show_seasonal_dishes(call: CallbackQuery, state: FSMContext, session: 
         )
         return
     
-    # Сохраняем список блюд в состояние
     await state.update_data(
         seasonal_dishes=seasonal_dishes,
         current_index=0,
         total=len(seasonal_dishes)
     )
     
-    # Показываем первое блюдо
     await show_dish_at_index(call, state, session, 0)
 
 
@@ -196,15 +177,7 @@ async def show_dish_at_index(
     session: AsyncSession,
     index: int
 ) -> None:
-    """
-    Показывает блюдо по указанному индексу в карусели.
-    
-    Args:
-        target: CallbackQuery для ответа
-        state: FSMContext для хранения состояния
-        session: Сессия БД
-        index: Индекс блюда в списке (0-based)
-    """
+    """Показывает блюдо по указанному индексу в карусели."""
     data = await state.get_data()
     seasonal_dishes = data.get('seasonal_dishes', [])
     total = data.get('total', 0)
@@ -213,7 +186,6 @@ async def show_dish_at_index(
         await target.answer("❌ Блюдо не найдено", show_alert=True)
         return
     
-    # Получаем полные данные блюда из БД (с фото)
     dish_id = seasonal_dishes[index]['dish_id']
     dish = await get_dish_by_id_orm(session, dish_id)
     
@@ -221,16 +193,11 @@ async def show_dish_at_index(
         await target.answer("❌ Блюдо не найдено", show_alert=True)
         return
     
-    # Сохраняем текущий индекс
     await state.update_data(current_index=index)
     
-    # Форматируем текст
     text = format_dish_detail(dish, index + 1, total)
-    
-    # Создаём кнопки навигации
     buttons, sizes = get_dish_navigation_buttons(index, total, dish_id)
     
-    # Отправляем сообщение с фото
     if dish.get('image'):
         await send_clean_message(
             target=target,
@@ -252,13 +219,11 @@ async def show_dish_at_index(
 
 @UserPromotionsRouter.callback_query(F.data.startswith(CALLBACK_PROMO_NEXT))
 async def promo_next_dish(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Переход к следующему блюду в карусели.
-    """
+    """Переход к следующему блюду в карусели."""
     try:
         next_index = int(call.data.split("_")[2])
     except (IndexError, ValueError):
-        await call.answer("❌ Ошибка навигации", show_alert=True)
+        await call.answer("❌ Ошибка", show_alert=True)
         return
     
     await show_dish_at_index(call, state, session, next_index)
@@ -266,25 +231,21 @@ async def promo_next_dish(call: CallbackQuery, state: FSMContext, session: Async
 
 @UserPromotionsRouter.callback_query(F.data.startswith(CALLBACK_PROMO_PREV))
 async def promo_prev_dish(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Переход к предыдущему блюду в карусели.
-    """
+    """Переход к предыдущему блюду в карусели."""
     try:
         prev_index = int(call.data.split("_")[2])
     except (IndexError, ValueError):
-        await call.answer("❌ Ошибка навигации", show_alert=True)
+        await call.answer("❌ Ошибка", show_alert=True)
         return
     
     await show_dish_at_index(call, state, session, prev_index)
 
 
 # =============================================================================
-# PASS HANDLER (для неактивных кнопок)
+# PASS HANDLER
 # =============================================================================
 
 @UserPromotionsRouter.callback_query(F.data == "pass")
 async def pass_callback(call: CallbackQuery) -> None:
-    """
-    Пустой callback для неактивных кнопок (например, счётчик блюд).
-    """
+    """Пустой callback для неактивных кнопок (счётчик блюд)."""
     await call.answer()

@@ -50,16 +50,16 @@ CALLBACK_CONFIRM_RECEIVED_START = "confirm_received_start_"
 CALLBACK_CONFIRM_RECEIVED_EXECUTE = "confirm_received_execute_"
 
 # -----------------------------------------------------------------------------
-# Button text constants
+# Button text constants — понятные и тёплые
 # -----------------------------------------------------------------------------
 BUTTON_TEXT = {
-    "back_to_menu": "🍽 В меню",
+    "back_to_menu": "🍰 В меню",
     "main_menu": "🏠 Главная",
     "back_to_orders": "📋 К активным заказам",
     "cancel_order": "❌ Отменить заказ",
     "confirm_cancel": "✅ Да, отменить",
     "cancel": "❌ Нет, оставить",
-    "confirm_received": "✅ Получил заказ"
+    "confirm_received": "✅ Заказ получил"
 }
 
 # -----------------------------------------------------------------------------
@@ -67,16 +67,16 @@ BUTTON_TEXT = {
 # -----------------------------------------------------------------------------
 
 ACTIVE_ORDERS_EMPTY = """
-🍳 <b>Активные заказы</b>
+🍳 <b>Активных заказов нет</b>
 
-У вас пока нет активных заказов.
-Заказы появляются здесь после того, как вы оформили корзину и отправили фото чека.
+Когда вы оформите заказ и отправите фото чека,
+он появится здесь — мы будем готовить с любовью 🤍
 
-<i>Сделайте заказ — и он появится здесь 🤍</i>
+<i>Загляните в меню, чтобы выбрать что-то вкусное 🥐</i>
 """
 
 ACTIVE_ORDERS_TEXT = """
-🍳 <b>Активные заказы</b>
+🍳 <b>Ваши заказы в работе</b>
 
 Вот что мы готовим для вас:
 """
@@ -85,16 +85,16 @@ ORDER_ITEM_FORMAT = """
 {number}. Заказ №{order_id}
    📅 {date}
    💰 {total} ₽
-   📊 Статус: {status}
+   📊 {status}
 """
 
 ORDER_DETAIL_TEMPLATE = """
 🍳 <b>ЗАКАЗ №{order_id}</b>
 {'━' * 35}
 
-📅 <b>Дата оформления:</b> {date}
+📅 <b>Оформлен:</b> {date}
 📊 <b>Статус:</b> {status}
-💬 <b>Ваши пожелания:</b> {comment}
+💬 <b>Пожелания:</b> {comment}
 
 {time_section}
 {'━' * 35}
@@ -107,67 +107,61 @@ ORDER_DETAIL_TEMPLATE = """
 
 ORDER_ITEM_DETAIL = """
 {number}. <b>{name}</b>
-   🥄 {quantity} × {price}₽ = <b>{subtotal}₽</b>
+   🥄 {quantity} шт × {price}₽ = <b>{subtotal}₽</b>
 """
 
 CANCEL_CONFIRM_TEXT = """
-⚠️ <b>Подтверждение отмены заказа #{order_id}</b>
+⚠️ <b>Отменить заказ №{order_id}?</b>
 
-Вы действительно хотите отменить этот заказ?
+Вы уверены? Это действие нельзя отменить.
 
 <b>Состав заказа:</b>
 {items_text}
 
 <b>Итого:</b> {total} ₽
-
-⚠️ <b>Внимание!</b> Это действие нельзя отменить.
 """
 
 ORDER_CANCELED_TEXT = """
 🗑 <b>Заказ №{order_id} отменён</b>
 
-Вы отменили этот заказ.
-Если вы передумали, вы можете оформить новый заказ в корзине.
+Если передумаете — всегда можно оформить новый 🤍
 
-<i>Ждём вас снова 🤍</i>
+<i>Ждём вас снова!</i>
 """
 
 CANCEL_ERROR_TEXT = """
 ❌ <b>Не удалось отменить заказ</b>
 
-Заказ уже находится в статусе <b>{status}</b> и не может быть отменён.
+Заказ уже {status} и его нельзя отменить.
 """
 
 RECEIVED_CONFIRM_TEXT = """
-⚠️ <b>Подтверждение получения заказа #{order_id}</b>
+⚠️ <b>Подтвердить получение заказа №{order_id}?</b>
 
-Вы действительно хотите подтвердить получение этого заказа?
+Вы уже получили заказ?
 
-<b>Состав заказа:</b>
+<b>Состав:</b>
 {items_text}
 
 <b>Итого:</b> {total} ₽
-
-⚠️ <b>Внимание!</b> После подтверждения заказ перейдёт в историю.
 """
 
 ORDER_COMPLETED_TEXT = """
 ✅ <b>Заказ №{order_id} завершён!</b>
 
-Спасибо, что выбрали нас! Будем рады видеть вас снова 🤍
+Спасибо, что выбрали нас!
+Будем рады видеть вас снова 🤍
 
 <b>Состав заказа:</b>
 {items_text}
 
 <b>Итого:</b> {total} ₽
-
-<i>Заказ передан в историю.</i>
 """
 
 RECEIVED_ERROR_TEXT = """
 ❌ <b>Не удалось подтвердить получение</b>
 
-Заказ уже находится в статусе <b>{status}</b>.
+Заказ уже {status}.
 """
 
 
@@ -176,57 +170,38 @@ RECEIVED_ERROR_TEXT = """
 # =============================================================================
 
 def format_delivery_time(hour_from: Optional[int], hour_to: Optional[int]) -> str:
-    """
-    Форматирует время доставки для отображения пользователю.
-    
-    Args:
-        hour_from: Час начала (0-23)
-        hour_to: Час окончания (0-23)
-    
-    Returns:
-        str: Отформатированное время или пустая строка
-    """
+    """Форматирует время доставки для отображения пользователю."""
     if hour_from is None:
         return ""
     
     if hour_to and hour_to != hour_from:
-        return f"🕐 <b>Время доставки:</b> {hour_from:02d}:00 — {hour_to:02d}:00"
-    return f"🕐 <b>Время доставки:</b> {hour_from:02d}:00"
+        return f"🕐 <b>Время доставки:</b> {hour_from:02d}:00 — {hour_to:02d}:00\n"
+    return f"🕐 <b>Время доставки:</b> {hour_from:02d}:00\n"
 
 
 def format_comment(comment: Optional[str]) -> str:
-    """
-    Форматирует комментарий/пожелания для отображения.
-    
-    Args:
-        comment: Текст комментария
-    
-    Returns:
-        str: Отформатированный комментарий
-    """
+    """Форматирует комментарий/пожелания для отображения."""
     if not comment:
-        return "💬 <i>Нет пожеланий</i>"
+        return "💬 <i>Без пожеланий</i>"
     
-    # Если комментарий длинный, обрезаем с многоточием
     if len(comment) > 150:
         comment = comment[:147] + "..."
     
-    # Экранируем HTML-спецсимволы
     comment = comment.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     
-    return f"💬 <b>Пожелания:</b>\n📝 {comment}"
+    return f"💬 {comment}"
 
 
 def format_order_status(status: str) -> str:
     """Форматирует статус заказа для отображения."""
     if not isinstance(status, str):
         ic(f"Unexpected status type: {type(status)}, value: {status}")
-        return "❓ Неизвестный статус"
+        return "❓ Неизвестно"
     
     status_map = {
-        OrdersStatus.VERIFICATION.value: "🔄 Ожидает подтверждения",
+        OrdersStatus.VERIFICATION.value: "🔄 Ожидает проверки",
         OrdersStatus.ACCEPTED.value: "👨‍🍳 Готовится",
-        OrdersStatus.READY_FOR_DELIVERY.value: "🚚 Готов к получению",
+        OrdersStatus.READY_FOR_DELIVERY.value: "🚚 Готов к выдаче",
         OrdersStatus.COMPLETED.value: "✅ Завершён",
         OrdersStatus.REFUSED.value: "❌ Отменён"
     }
@@ -234,23 +209,15 @@ def format_order_status(status: str) -> str:
 
 
 def format_order_date(date: datetime) -> str:
-    """
-    Форматирует дату заказа для пользователя.
-    Показывает только дату, без времени.
-    """
+    """Форматирует дату заказа для пользователя."""
     if not hasattr(date, 'strftime'):
         ic(f"Unexpected date type: {type(date)}, value: {date}")
         return "дата неизвестна"
-    return date.strftime("%d.%m.%Y")  # ✅ Только дата, без времени
+    return date.strftime("%d.%m.%Y")
 
 
 async def get_user_active_orders(session: AsyncSession, user_id: int) -> List:
-    """
-    Получает активные заказы пользователя:
-    - VERIFICATION (ждёт подтверждения)
-    - ACCEPTED (готовится)
-    - READY_FOR_DELIVERY (готов к получению)
-    """
+    """Получает активные заказы пользователя."""
     order_repo = OrderRepository(session=session, user_id=user_id)
     
     verification_orders = await order_repo.get_orders_by_user_and_status(OrdersStatus.VERIFICATION)
@@ -271,7 +238,6 @@ async def get_order_details(session: AsyncSession, order_id: int) -> Dict[str, A
     if not order_details:
         return None
     
-    # Добавляем время доставки из модели Order
     order = await order_repo.get_order_by_id(order_id)
     if order:
         order_details['delivery_hour_from'] = getattr(order, 'delivery_hour_from', None)
@@ -306,18 +272,12 @@ async def format_orders_list(orders: List, session: AsyncSession) -> str:
 
 
 def can_cancel_order(status: str) -> bool:
-    """
-    Проверяет, можно ли отменить заказ в данном статусе.
-    Отменить можно только заказы в статусе VERIFICATION (ещё не приняты в работу).
-    """
+    """Проверяет, можно ли отменить заказ."""
     return status == OrdersStatus.VERIFICATION.value
 
 
 def can_confirm_received(status: str) -> bool:
-    """
-    Проверяет, можно ли подтвердить получение заказа.
-    Подтвердить можно только заказы в статусе READY_FOR_DELIVERY.
-    """
+    """Проверяет, можно ли подтвердить получение заказа."""
     return status == OrdersStatus.READY_FOR_DELIVERY.value
 
 
@@ -327,9 +287,7 @@ def can_confirm_received(status: str) -> bool:
 
 @UserCurrentOrdersRouter.callback_query(F.data == CALLBACK_CURRENT_ORDERS)
 async def show_active_orders(call: CallbackQuery, session: AsyncSession) -> None:
-    """
-    Показывает активные заказы пользователя.
-    """
+    """Показывает активные заказы пользователя."""
     user_id = call.from_user.id
     orders = await get_user_active_orders(session, user_id)
     
@@ -338,7 +296,7 @@ async def show_active_orders(call: CallbackQuery, session: AsyncSession) -> None
             target=call,
             text=ACTIVE_ORDERS_EMPTY,
             buttons={
-                "🍽 В меню": CALLBACK_BACK_TO_MENU,
+                "🍰 В меню": CALLBACK_BACK_TO_MENU,
                 "🏠 Главная": CALLBACK_MAIN_MENU
             },
             sizes=[1, 1],
@@ -373,9 +331,7 @@ async def show_active_orders(call: CallbackQuery, session: AsyncSession) -> None
 
 @UserCurrentOrdersRouter.callback_query(F.data.startswith(CALLBACK_ORDER_DETAIL))
 async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
-    """
-    Показывает детальную информацию об активном заказе.
-    """
+    """Показывает детальную информацию об активном заказе."""
     order_id = int(call.data.split("_")[3])
     
     order_details = await get_order_details(session, order_id)
@@ -384,7 +340,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверяем, что заказ активен
     active_statuses = [
         OrdersStatus.VERIFICATION.value,
         OrdersStatus.ACCEPTED.value,
@@ -395,7 +350,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
         await show_active_orders(call, session)
         return
     
-    # Формируем список блюд с нумерацией
     items_text = ""
     for i, item in enumerate(order_details['items'], 1):
         items_text += ORDER_ITEM_DETAIL.format(
@@ -406,7 +360,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
             subtotal=item['subtotal']
         )
     
-    # Формируем секцию времени (если есть)
     time_section = ""
     if order_details.get('delivery_hour_from'):
         time_section = format_delivery_time(
@@ -414,27 +367,23 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
             order_details['delivery_hour_to']
         )
     
-    # Формируем полный текст
     text = ORDER_DETAIL_TEMPLATE.format(
         order_id=order_details['order_id'],
         date=format_order_date(order_details['created']),
         status=format_order_status(order_details['status']),
         comment=format_comment(order_details.get('comment')),
-        time_section=time_section + "\n" if time_section else "",
+        time_section=time_section,
         items=items_text,
         total=order_details['total']
     )
     
-    # Формируем кнопки в зависимости от статуса
     buttons = {}
     sizes = []
     
-    # Кнопка отмены — только для VERIFICATION
     if can_cancel_order(order_details['status']):
         buttons[BUTTON_TEXT["cancel_order"]] = f"{CALLBACK_CANCEL_ORDER}{order_id}"
         sizes.append(1)
     
-    # Кнопка подтверждения получения — только для READY_FOR_DELIVERY
     if can_confirm_received(order_details['status']):
         buttons[BUTTON_TEXT["confirm_received"]] = f"{CALLBACK_CONFIRM_RECEIVED_START}{order_id}"
         sizes.append(1)
@@ -459,9 +408,7 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
 
 @UserCurrentOrdersRouter.callback_query(F.data.startswith(CALLBACK_CANCEL_ORDER))
 async def cancel_order_confirm(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Подтверждение отмены заказа.
-    """
+    """Подтверждение отмены заказа."""
     order_id = int(call.data.split("_")[2])
     
     order_details = await get_order_details(session, order_id)
@@ -470,12 +417,10 @@ async def cancel_order_confirm(call: CallbackQuery, state: FSMContext, session: 
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверяем, можно ли отменить
     if not can_cancel_order(order_details['status']):
-        await call.answer(f"❌ Заказ в статусе '{format_order_status(order_details['status'])}' нельзя отменить", show_alert=True)
+        await call.answer(f"❌ Заказ {format_order_status(order_details['status']).lower()} — отменить нельзя", show_alert=True)
         return
     
-    # Формируем текст для подтверждения
     items_text = ""
     for item in order_details['items']:
         items_text += f"\n• {item['name']} — {item['quantity']} × {item['price']}₽ = {item['subtotal']}₽"
@@ -502,9 +447,7 @@ async def cancel_order_confirm(call: CallbackQuery, state: FSMContext, session: 
 
 @UserCurrentOrdersRouter.callback_query(F.data.startswith(CALLBACK_CONFIRM_CANCEL))
 async def cancel_order_execute(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Выполнение отмены заказа.
-    """
+    """Выполнение отмены заказа."""
     order_id = int(call.data.split("_")[2])
     
     order_details = await get_order_details(session, order_id)
@@ -513,20 +456,17 @@ async def cancel_order_execute(call: CallbackQuery, state: FSMContext, session: 
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверяем, можно ли отменить (повторная проверка)
     if not can_cancel_order(order_details['status']):
-        await call.answer(f"❌ Заказ уже в статусе '{format_order_status(order_details['status'])}' и не может быть отменён", show_alert=True)
+        await call.answer(f"❌ Заказ уже {format_order_status(order_details['status']).lower()}", show_alert=True)
         await show_order_detail(call, session)
         return
     
-    # Отменяем заказ
     order_repo = OrderRepository(session=session)
     updated_order = await order_repo.update_order_status(order_id, OrdersStatus.REFUSED)
     
     if updated_order:
         await session.commit()
         
-        # Формируем сообщение об успешной отмене
         items_text = ""
         for item in order_details['items']:
             items_text += f"\n• {item['name']} — {item['quantity']} × {item['price']}₽ = {item['subtotal']}₽"
@@ -538,7 +478,7 @@ async def cancel_order_execute(call: CallbackQuery, state: FSMContext, session: 
         )
         
         buttons = {
-            "🍽 В меню": CALLBACK_BACK_TO_MENU,
+            "🍰 В меню": CALLBACK_BACK_TO_MENU,
             "🏠 Главная": CALLBACK_MAIN_MENU
         }
         
@@ -560,10 +500,7 @@ async def cancel_order_execute(call: CallbackQuery, state: FSMContext, session: 
 
 @UserCurrentOrdersRouter.callback_query(F.data.startswith(CALLBACK_CONFIRM_RECEIVED_START))
 async def confirm_received_confirm(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Подтверждение получения заказа.
-    """
-    # Формат: confirm_received_start_{order_id}
+    """Подтверждение получения заказа."""
     parts = call.data.split("_")
     order_id = int(parts[3])
     
@@ -573,12 +510,10 @@ async def confirm_received_confirm(call: CallbackQuery, state: FSMContext, sessi
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверяем, можно ли подтвердить получение
     if not can_confirm_received(order_details['status']):
-        await call.answer(f"❌ Заказ в статусе '{format_order_status(order_details['status'])}' нельзя подтвердить", show_alert=True)
+        await call.answer(f"❌ Заказ {format_order_status(order_details['status']).lower()} — подтвердить нельзя", show_alert=True)
         return
     
-    # Формируем текст для подтверждения
     items_text = ""
     for item in order_details['items']:
         items_text += f"\n• {item['name']} — {item['quantity']} × {item['price']}₽ = {item['subtotal']}₽"
@@ -605,10 +540,7 @@ async def confirm_received_confirm(call: CallbackQuery, state: FSMContext, sessi
 
 @UserCurrentOrdersRouter.callback_query(F.data.startswith(CALLBACK_CONFIRM_RECEIVED_EXECUTE))
 async def confirm_received_execute(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Выполнение подтверждения получения заказа.
-    """
-    # Формат: confirm_received_execute_{order_id}
+    """Выполнение подтверждения получения заказа."""
     parts = call.data.split("_")
     order_id = int(parts[3])
     
@@ -618,20 +550,17 @@ async def confirm_received_execute(call: CallbackQuery, state: FSMContext, sessi
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверяем, можно ли подтвердить получение (повторная проверка)
     if not can_confirm_received(order_details['status']):
-        await call.answer(f"❌ Заказ уже в статусе '{format_order_status(order_details['status'])}'", show_alert=True)
+        await call.answer(f"❌ Заказ уже {format_order_status(order_details['status']).lower()}", show_alert=True)
         await show_order_detail(call, session)
         return
     
-    # Завершаем заказ
     order_repo = OrderRepository(session=session)
     updated_order = await order_repo.update_order_status(order_id, OrdersStatus.COMPLETED)
     
     if updated_order:
         await session.commit()
         
-        # Формируем сообщение об успешном завершении
         items_text = ""
         for item in order_details['items']:
             items_text += f"\n• {item['name']} — {item['quantity']} × {item['price']}₽ = {item['subtotal']}₽"
@@ -643,7 +572,7 @@ async def confirm_received_execute(call: CallbackQuery, state: FSMContext, sessi
         )
         
         buttons = {
-            "🍽 В меню": CALLBACK_BACK_TO_MENU,
+            "🍰 В меню": CALLBACK_BACK_TO_MENU,
             "🏠 Главная": CALLBACK_MAIN_MENU
         }
         

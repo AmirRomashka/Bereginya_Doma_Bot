@@ -57,11 +57,11 @@ CALLBACK_CONFIRM_TIME_RANGE = "confirm_time_range"
 CALLBACK_BACK_TO_DATES = "confirm_back_to_dates"
 
 # -----------------------------------------------------------------------------
-# Button text constants
+# Button text constants — понятные и тёплые
 # -----------------------------------------------------------------------------
 BUTTON_TEXT = {
-    "skip_comment": "⏭ Пропустить",
-    "back_to_menu": "🍽 В меню",
+    "skip_comment": "⏭ Без пожеланий",
+    "back_to_menu": "🍰 В меню",
     "main_menu": "🏠 Главная",
     "select_time": "🕐 Выбрать время"
 }
@@ -71,50 +71,47 @@ BUTTON_TEXT = {
 # -----------------------------------------------------------------------------
 
 CONFIRM_ORDERS_EMPTY = """
-📭 <b>Заказы, ожидающие подтверждения</b>
+📭 <b>Нет заказов на оплату</b>
 
-У вас нет заказов, готовых к оплате.
-После того как администратор определит зону доставки, заказы появятся здесь.
+Когда администратор проверит адрес доставки, заказы появятся здесь.
+Мы пришлём уведомление 🤍
 
-<i>Ожидайте уведомление 🤍</i>
+<i>А пока можно посмотреть меню 🥐</i>
 """
 
 CONFIRM_ORDERS_TEXT = """
 ✅ <b>Заказы, готовые к оплате</b>
 
-Выберите заказ для оплаты:
+Выберите, какой заказ оплачиваем:
 """
 
 ORDER_SELECT_TEXT = """
-📦 <b>Заказ №{order_id}</b>
+📦 <b>Заказ №{order_id}</b> от {date}
 
-📅 <b>Дата создания:</b> {date}
 📍 <b>Адрес:</b> {address}
 💰 <b>Сумма заказа:</b> {order_total} ₽
 🚚 <b>Зона доставки:</b> {delivery_zone}
-💵 <b>Стоимость доставки:</b> {delivery_price} ₽
+💵 <b>Доставка:</b> {delivery_price} ₽
 
 <b>Итого к оплате:</b> {final_total} ₽
 
-<i>Выберите дату доставки и время</i>
+<i>Выберите дату и время доставки 🤍</i>
 """
 
 DELIVERY_DATE_SELECT_TEXT = """
-📅 <b>Выберите дату доставки</b>
+📅 <b>Когда привезти?</b>
 
-Для заказа №{order_id} выберите удобную дату:
+Для заказа №{order_id} выберите удобный день:
 
 {delivery_dates}
 """
 
 DELIVERY_DATE_CONFIRM_TEXT = """
-✅ <b>Вы выбрали дату доставки</b>
+✅ <b>Вы выбрали:</b> {date}
 
-📅 <b>Дата:</b> {date}
-📊 <b>Статус:</b> {status}
-📦 <b>Заказов на эту дату:</b> {orders}/{limit}
+В этот день у нас уже заказов: {orders}/{limit}
 
-Подтверждаете?
+Продолжим?
 """
 
 # -----------------------------------------------------------------------------
@@ -122,82 +119,72 @@ DELIVERY_DATE_CONFIRM_TEXT = """
 # -----------------------------------------------------------------------------
 
 TIME_RANGE_SELECT_PROMPT = """
-🕐 <b>Выберите удобное время доставки</b>
+🕐 <b>Удобное время доставки</b>
 
 📅 <b>Дата:</b> {date}
 📦 <b>Заказ №{order_id}</b>
 
-Нажмите на <b>ДВА ЧАСА</b> — начало и конец диапазона.
-Часы между ними подсветятся зелёным ✅
+Нажмите на <b>два часа</b> — начало и конец.
+Мы приедем в этот промежуток.
 
-<b>Выбранный диапазон:</b> {selected_range}
+<b>Вы выбрали:</b> {selected_range}
 
 {hours_buttons}
 
-<i>• Нажмите "Сбросить" чтобы выбрать заново</i>
-<i>• После выбора нажмите "Подтвердить"</i>
+<i>• «Сбросить» — начать заново</i>
+<i>• «Подтвердить» — запомнить время</i>
 """
 
 TIME_RANGE_CONFIRM_TEXT = """
-✅ <b>Время доставки выбрано!</b>
+✅ <b>Время запомнили!</b>
 
-📅 <b>Дата:</b> {date}
-🕐 <b>Время:</b> {time_range}
+📅 {date}, с {time_range}
 
-Теперь переходим к оплате.
+Теперь перейдём к оплате 🤍
 """
 
 PAYMENT_TEXT = """
 💳 <b>Оплата заказа №{order_id}</b>
 
-<b>Сумма к оплате:</b> {total} ₽
+<b>Сумма:</b> {total} ₽
 
-Реквизиты для оплаты:
+<b>Реквизиты:</b>
 ━━━━━━━━━━━━━━━━━━━━━
-🏦 <b>Получатель:</b> ИП Иванова
-💳 <b>Счёт:</b> 40802810123456789012
+💳 <b>Счёт:</b> 2200700115185265
 🏛 <b>Банк:</b> Т-Банк
-🔢 <b>ИНН:</b> 123456789012
-🔢 <b>КПП:</b> 123456789
 📱 <b>Сумма:</b> {total} ₽
 ━━━━━━━━━━━━━━━━━━━━━
 
-После оплаты отправьте фото чека.
-<i>Заказ перейдёт в обработку после подтверждения оплаты</i>
+После оплаты отправьте фото чека — и мы начнём готовить 🤍
 """
 
 COMMENT_PROMPT = """
 📝 <b>Пожелания к заказу</b>
 
-У вас есть особые пожелания?
-Можете написать их здесь, например:
+Хотите что-то добавить?
 • Без лука
-• Побыстрее
-• Позвоните перед доставкой
+• Позвонить перед доставкой
+• Побыстрее, если получится
 
-Или нажмите "Пропустить"
+Или просто нажмите «Без пожеланий» 🤍
 """
 
 ORDER_CONFIRMED = """
-✅ <b>Заказ №{order_id} подтверждён и передан в работу!</b>
+✅ <b>Заказ №{order_id} принят в работу!</b>
 
-Скоро с вами свяжется наш менеджер для подтверждения.
+Скоро с вами свяжется наш менеджер.
 
-<b>Состав заказа:</b>
+<b>Состав:</b>
 {items_text}
 
 <b>Адрес доставки:</b>
 {address_text}
 
-<b>Дата доставки:</b>
-{delivery_date_text}
-
-<b>Время доставки:</b>
-{delivery_time_range}
-
+<b>Дата:</b> {delivery_date_text}
+<b>Время:</b> {delivery_time_range}
 <b>Итого:</b> {total} ₽
 
-<i>Спасибо, что выбрали нас! Готовим с любовью 🤍</i>
+<i>Спасибо! Готовим с любовью 🤍</i>
 """
 
 
@@ -205,8 +192,6 @@ ORDER_CONFIRMED = """
 # ВРЕМЕННОЕ ХРАНИЛИЩЕ ДЛЯ ВЫБОРА ЧАСОВ
 # =============================================================================
 
-# Словарь для хранения временного выбора пользователя
-# Ключ: user_id, Значение: {'start': int, 'end': int, 'delivery_id': int, 'order_id': int}
 _temp_hour_selection: Dict[int, Dict] = {}
 
 
@@ -221,16 +206,12 @@ def clear_temp_selection(user_id: int) -> None:
 
 
 def get_hour_buttons(selected_start: int = None, selected_end: int = None) -> tuple[dict, list]:
-    """
-    Создаёт кнопки для часов 9-20 с визуализацией выбранного диапазона.
-    Часы внутри диапазона становятся зелёными.
-    """
+    """Создаёт кнопки для часов 9-20 с визуализацией выбранного диапазона."""
     buttons = {}
     sizes = []
     row = []
     
-    for hour in range(9, 21):  # 9,10,11,...,20
-        # Определяем, входит ли час в выбранный диапазон
+    for hour in range(9, 21):
         is_in_range = False
         if selected_start is not None and selected_end is not None:
             if selected_start <= selected_end:
@@ -238,7 +219,6 @@ def get_hour_buttons(selected_start: int = None, selected_end: int = None) -> tu
             else:
                 is_in_range = hour >= selected_start or hour <= selected_end
         
-        # Эмодзи для визуализации
         if is_in_range:
             emoji = "✅"
         elif hour == selected_start:
@@ -252,7 +232,7 @@ def get_hour_buttons(selected_start: int = None, selected_end: int = None) -> tu
         buttons[button_text] = f"{CALLBACK_SELECT_HOUR}{hour}"
         row.append(button_text)
         
-        if len(row) == 4:  # по 4 кнопки в ряд
+        if len(row) == 4:
             sizes.append(4)
             row = []
     
@@ -263,17 +243,17 @@ def get_hour_buttons(selected_start: int = None, selected_end: int = None) -> tu
 
 
 def format_order_date(date: datetime) -> str:
-    """Форматирует дату заказа (только дата)."""
+    """Форматирует дату заказа."""
     return date.strftime("%d.%m.%Y")
 
 
 def format_delivery_date(date) -> str:
-    """Форматирует дату доставки для отображения (только дата)."""
+    """Форматирует дату доставки."""
     return date.delivery_date.strftime("%d.%m.%Y")
 
 
 def format_delivery_time_range(hour_from: int, hour_to: int = None) -> str:
-    """Форматирует временной диапазон для отображения."""
+    """Форматирует временной диапазон."""
     if hour_to and hour_to != hour_from:
         return f"{hour_from}:00 - {hour_to}:00"
     return f"{hour_from}:00"
@@ -284,23 +264,19 @@ def get_delivery_status_icon(date) -> tuple[str, str]:
     if not date.is_available:
         return "❌", "Недоступна"
     if date.order_limit and date.current_orders >= date.order_limit:
-        return "🔴", "Лимит заполнен"
-    return "✅", "Доступна"
+        return "🔴", "Лимит"
+    return "✅", "Свободно"
 
 
 def format_address_text(address) -> str:
     """Форматирует адрес для отображения."""
     if not address:
         return "📍 Адрес не указан"
-    return f"📍 <b>{address.adress_name}</b>\n   {address.coordinates}"
+    return f"📍 <b>{address.adress_name}</b>"
 
 
 async def get_user_confirm_orders(session: AsyncSession, user_id: int) -> List:
-    """
-    Получает заказы пользователя, готовые к подтверждению:
-    - Статус AWAITING_ADDRESS_STATUS
-    - У адреса есть зона доставки (adress_status не None)
-    """
+    """Получает заказы пользователя, готовые к подтверждению."""
     order_repo = OrderRepository(session=session, user_id=user_id)
     address_repo = AddressRepository(session)
     
@@ -358,14 +334,10 @@ async def get_order_with_details(session: AsyncSession, order_id: int) -> Dict[s
 
 @UserConfirmOrdersRouter.callback_query(F.data == CALLBACK_CONFIRM_ORDERS)
 async def show_confirm_orders(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Показывает заказы, готовые к подтверждению и оплате.
-    """
+    """Показывает заказы, готовые к подтверждению и оплате."""
     user_id = call.from_user.id
     
-    # Очищаем временные данные
     clear_temp_selection(user_id)
-    
     await state.set_state(user_states.UserMenu.confirm_orders)
     
     orders = await get_user_confirm_orders(session, user_id)
@@ -375,7 +347,7 @@ async def show_confirm_orders(call: CallbackQuery, state: FSMContext, session: A
             target=call,
             text=CONFIRM_ORDERS_EMPTY,
             buttons={
-                "🍽 В меню": CALLBACK_BACK_TO_MENU,
+                "🍰 В меню": CALLBACK_BACK_TO_MENU,
                 "🏠 Главная": CALLBACK_MAIN_MENU
             },
             sizes=[1, 1],
@@ -405,17 +377,13 @@ async def show_confirm_orders(call: CallbackQuery, state: FSMContext, session: A
     )
 
 
-@UserConfirmOrdersRouter.callback_query(
-    F.data.startswith(CALLBACK_SELECT_ORDER)
-)
+@UserConfirmOrdersRouter.callback_query(F.data.startswith(CALLBACK_SELECT_ORDER))
 async def select_order(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Выбор заказа для оплаты.
-    """
+    """Выбор заказа для оплаты."""
     parts = call.data.split("_")
     
     if len(parts) < 3 or not parts[2]:
-        await call.answer("❌ Неверный формат данных", show_alert=True)
+        await call.answer("❌ Ошибка", show_alert=True)
         return
     
     try:
@@ -449,8 +417,8 @@ async def select_order(call: CallbackQuery, state: FSMContext, session: AsyncSes
     )
     
     buttons = {
-        "📅 Выбрать дату доставки": f"{CALLBACK_SELECT_DELIVERY_DATE}{order_id}",
-        "🔙 К заказам": CALLBACK_CONFIRM_ORDERS
+        "📅 Выбрать дату": f"{CALLBACK_SELECT_DELIVERY_DATE}{order_id}",
+        "🔙 К списку заказов": CALLBACK_CONFIRM_ORDERS
     }
     
     await send_clean_message(
@@ -471,25 +439,23 @@ async def select_order(call: CallbackQuery, state: FSMContext, session: AsyncSes
     StateFilter(user_states.UserMenu.confirm_order_detail)
 )
 async def select_delivery_date(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Выбор даты доставки для заказа.
-    """
+    """Выбор даты доставки для заказа."""
     callback_data = call.data
     
     if callback_data.startswith(CALLBACK_SELECT_DELIVERY_DATE):
         order_id_str = callback_data[len(CALLBACK_SELECT_DELIVERY_DATE):]
     else:
-        await call.answer("❌ Неверный формат данных", show_alert=True)
+        await call.answer("❌ Ошибка", show_alert=True)
         return
     
     if not order_id_str:
-        await call.answer("❌ ID заказа отсутствует", show_alert=True)
+        await call.answer("❌ Ошибка", show_alert=True)
         return
     
     try:
         order_id = int(order_id_str)
     except ValueError:
-        await call.answer(f"❌ Неверный ID заказа: {order_id_str}", show_alert=True)
+        await call.answer("❌ Неверный ID заказа", show_alert=True)
         return
     
     await state.set_state(user_states.UserMenu.confirm_order_delivery_date)
@@ -501,7 +467,7 @@ async def select_delivery_date(call: CallbackQuery, state: FSMContext, session: 
     if not available_dates:
         await send_clean_message(
             target=call,
-            text="📭 К сожалению, нет доступных дат доставки. Попробуйте позже.",
+            text="📭 К сожалению, нет свободных дат. Попробуйте позже 🤍",
             buttons={
                 "🔙 К заказу": f"{CALLBACK_SELECT_ORDER}{order_id}",
                 "🏠 Главная": CALLBACK_MAIN_MENU
@@ -516,7 +482,7 @@ async def select_delivery_date(call: CallbackQuery, state: FSMContext, session: 
     sizes = []
     
     for date in available_dates[:10]:
-        date_str = format_delivery_date(date)  # ✅ Только дата
+        date_str = format_delivery_date(date)
         status_icon, status_text = get_delivery_status_icon(date)
         limit_info = f"{date.current_orders}/{date.order_limit or '∞'}"
         
@@ -549,86 +515,74 @@ async def select_delivery_date(call: CallbackQuery, state: FSMContext, session: 
     StateFilter(user_states.UserMenu.confirm_order_delivery_date)
 )
 async def confirm_delivery_date(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Подтверждение выбранной даты доставки и переход к выбору времени.
-    """
+    """Подтверждение выбранной даты доставки и переход к выбору времени."""
     parts = call.data.split("_")
     
     if len(parts) < 5:
-        await call.answer("❌ Неверный формат данных. Ожидается: confirm_delivery_date_{order_id}_{delivery_id}", show_alert=True)
+        await call.answer("❌ Ошибка формата", show_alert=True)
         return
     
     if not parts[3] or not parts[4]:
-        await call.answer("❌ Отсутствуют ID заказа или даты доставки", show_alert=True)
+        await call.answer("❌ Ошибка данных", show_alert=True)
         return
     
     try:
         order_id = int(parts[3])
         delivery_id = int(parts[4])
     except ValueError:
-        await call.answer("❌ Неверный формат ID. Ожидаются числа.", show_alert=True)
+        await call.answer("❌ Неверный ID", show_alert=True)
         return
     
-    # Проверка существования заказа
     order_repo = OrderRepository(session=session)
     order = await order_repo.get_order_by_id(order_id)
     
     if not order:
-        await call.answer("❌ Заказ не найден в базе данных", show_alert=True)
+        await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Проверка статуса заказа (должен быть AWAITING_ADDRESS_STATUS)
     if order.order_status != OrdersStatus.AWAITING_ADDRESS_STATUS.value:
-        await call.answer(f"❌ Заказ №{order_id} не готов к подтверждению. Текущий статус: {order.order_status}", show_alert=True)
+        await call.answer(f"❌ Заказ №{order_id} не готов к оплате", show_alert=True)
         return
     
-    # Проверка, что заказ принадлежит пользователю
     user_id = call.from_user.id
     if order.user_id != user_id:
-        await call.answer("❌ Этот заказ принадлежит другому пользователю", show_alert=True)
+        await call.answer("❌ Это не ваш заказ", show_alert=True)
         return
     
-    # Проверка существования даты доставки
     delivery_repo = DeliveryRepository(session)
     delivery_date = await delivery_repo.get_by_id(delivery_id)
     
     if not delivery_date:
-        await call.answer("❌ Дата доставки не найдена", show_alert=True)
+        await call.answer("❌ Дата не найдена", show_alert=True)
         return
     
-    # Проверка доступности даты
     if not delivery_date.is_available:
-        await call.answer("❌ Эта дата больше недоступна", show_alert=True)
+        await call.answer("❌ Эта дата уже недоступна", show_alert=True)
         await select_delivery_date(call, state, session)
         return
     
-    # Проверка лимита заказов на дату
     if delivery_date.order_limit and delivery_date.current_orders >= delivery_date.order_limit:
-        await call.answer(f"❌ На эту дату лимит заказов исчерпан ({delivery_date.current_orders}/{delivery_date.order_limit})", show_alert=True)
+        await call.answer(f"❌ На эту дату лимит заказов ({delivery_date.current_orders}/{delivery_date.order_limit})", show_alert=True)
         await select_delivery_date(call, state, session)
         return
     
-    # Проверка, что дата не в прошлом
     now = datetime.now()
     if delivery_date.delivery_date < now:
         await call.answer("❌ Эта дата уже прошла", show_alert=True)
         await select_delivery_date(call, state, session)
         return
     
-    # Проверка минимального времени до доставки
     min_hours = 2
     if delivery_date.delivery_date < now + timedelta(hours=min_hours):
-        await call.answer(f"❌ До доставки должно быть не менее {min_hours} часов", show_alert=True)
+        await call.answer(f"❌ До доставки не менее {min_hours} часов", show_alert=True)
         await select_delivery_date(call, state, session)
         return
     
-    # Сохраняем в состояние и переходим к выбору времени
     await state.update_data(
         confirm_order_id=order_id,
         selected_delivery_id=delivery_id
     )
     
-    # Переходим к выбору временного диапазона
     await show_time_range_selection(call, state, session, delivery_id, order_id)
 
 
@@ -653,7 +607,6 @@ async def show_time_range_selection(
     
     user_id = target.from_user.id
     
-    # Инициализируем временное хранилище
     _temp_hour_selection[user_id] = {
         'delivery_id': delivery_id,
         'order_id': order_id,
@@ -669,10 +622,9 @@ async def show_time_range_selection(
     
     buttons, sizes = get_hour_buttons()
     
-    # Добавляем кнопки управления
     buttons["🔄 Сбросить"] = CALLBACK_RESET_HOURS
     buttons["✅ Подтвердить"] = CALLBACK_CONFIRM_TIME_RANGE
-    buttons["🔙 Назад"] = CALLBACK_BACK_TO_DATES
+    buttons["🔙 К выбору даты"] = CALLBACK_BACK_TO_DATES
     sizes.extend([1, 1, 1])
     
     text = TIME_RANGE_SELECT_PROMPT.format(
@@ -696,39 +648,32 @@ async def show_time_range_selection(
     StateFilter(user_states.UserMenu.confirm_order_time_range)
 )
 async def select_hour(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """Обработка выбора часа (первый или второй в диапазоне)."""
+    """Обработка выбора часа."""
     hour = int(call.data.split("_")[3])
     user_id = call.from_user.id
     
-    # Получаем текущее состояние выбора
     if user_id not in _temp_hour_selection:
         _temp_hour_selection[user_id] = {'start': None, 'end': None}
     
     current = _temp_hour_selection[user_id]
     
-    # Логика выбора
     if current['start'] is None:
-        # Первый час — начало диапазона
         current['start'] = hour
-        await call.answer(f"🔵 Начало диапазона: {hour}:00")
+        await call.answer(f"🔵 Начало: {hour}:00")
         
     elif current['end'] is None:
-        # Второй час — конец диапазона
         current['end'] = hour
         
-        # Сортируем, чтобы начало было меньше конца
         if current['start'] > current['end']:
             current['start'], current['end'] = current['end'], current['start']
         
         await call.answer(f"✅ Диапазон: {current['start']}:00 - {current['end']}:00")
         
     else:
-        # Если уже выбран полный диапазон — сбрасываем и начинаем заново
         current['start'] = hour
         current['end'] = None
-        await call.answer(f"🔄 Начало заново: {hour}:00")
+        await call.answer(f"🔄 Начнём заново: {hour}:00")
     
-    # Обновляем отображение
     data = await state.get_data()
     delivery_id = data.get('selected_delivery_id')
     order_id = data.get('confirm_order_id')
@@ -736,7 +681,6 @@ async def select_hour(call: CallbackQuery, state: FSMContext, session: AsyncSess
     delivery_repo = DeliveryRepository(session)
     delivery_date = await delivery_repo.get_by_id(delivery_id)
     
-    # Формируем текст с выбранным диапазоном
     if current['start'] is not None and current['end'] is not None:
         range_text = f"{current['start']}:00 - {current['end']}:00"
     elif current['start'] is not None:
@@ -744,11 +688,10 @@ async def select_hour(call: CallbackQuery, state: FSMContext, session: AsyncSess
     else:
         range_text = "не выбран"
     
-    # Генерируем кнопки с подсветкой
     buttons, sizes = get_hour_buttons(current['start'], current['end'])
     buttons["🔄 Сбросить"] = CALLBACK_RESET_HOURS
     buttons["✅ Подтвердить"] = CALLBACK_CONFIRM_TIME_RANGE
-    buttons["🔙 Назад"] = CALLBACK_BACK_TO_DATES
+    buttons["🔙 К выбору даты"] = CALLBACK_BACK_TO_DATES
     sizes.extend([1, 1, 1])
     
     text = TIME_RANGE_SELECT_PROMPT.format(
@@ -781,7 +724,6 @@ async def reset_hours(call: CallbackQuery, state: FSMContext, session: AsyncSess
     
     await call.answer("🔄 Выбор сброшен")
     
-    # Перерисовываем интерфейс
     data = await state.get_data()
     delivery_id = data.get('selected_delivery_id')
     order_id = data.get('confirm_order_id')
@@ -792,7 +734,7 @@ async def reset_hours(call: CallbackQuery, state: FSMContext, session: AsyncSess
     buttons, sizes = get_hour_buttons()
     buttons["🔄 Сбросить"] = CALLBACK_RESET_HOURS
     buttons["✅ Подтвердить"] = CALLBACK_CONFIRM_TIME_RANGE
-    buttons["🔙 Назад"] = CALLBACK_BACK_TO_DATES
+    buttons["🔙 К выбору даты"] = CALLBACK_BACK_TO_DATES
     sizes.extend([1, 1, 1])
     
     text = TIME_RANGE_SELECT_PROMPT.format(
@@ -824,10 +766,9 @@ async def confirm_time_range(call: CallbackQuery, state: FSMContext, session: As
     end_hour = selection.get('end')
     
     if start_hour is None:
-        await call.answer("❌ Сначала выберите начало диапазона!", show_alert=True)
+        await call.answer("❌ Сначала выберите время!", show_alert=True)
         return
     
-    # Если выбран только начало, устанавливаем его же как конец (один час)
     if end_hour is None:
         end_hour = start_hour
     
@@ -839,23 +780,19 @@ async def confirm_time_range(call: CallbackQuery, state: FSMContext, session: As
         await call.answer("❌ Ошибка: заказ не найден", show_alert=True)
         return
     
-    # Сохраняем часы в заказ
     order_repo = OrderRepository(session=session)
     updated_order = await order_repo.update_delivery_hours(order_id, start_hour, end_hour)
     
     if updated_order:
         await session.commit()
         
-        # Сохраняем в состояние
         await state.update_data(
             selected_hour_from=start_hour,
             selected_hour_to=end_hour
         )
         
-        # Очищаем временные данные
         clear_temp_selection(user_id)
         
-        # Показываем подтверждение и переходим к оплате
         delivery_repo = DeliveryRepository(session)
         delivery_date = await delivery_repo.get_by_id(delivery_id)
         date_str = format_delivery_date(delivery_date) if delivery_date else "не указана"
@@ -876,11 +813,10 @@ async def confirm_time_range(call: CallbackQuery, state: FSMContext, session: As
             parse_mode="HTML"
         )
         
-        # Устанавливаем состояние для ожидания перехода к оплате
         await state.set_state(user_states.UserMenu.confirm_order_time_confirmed)
         
     else:
-        await call.answer("❌ Ошибка при сохранении времени доставки", show_alert=True)
+        await call.answer("❌ Ошибка при сохранении времени", show_alert=True)
 
 
 @UserConfirmOrdersRouter.callback_query(
@@ -899,10 +835,8 @@ async def proceed_to_payment(call: CallbackQuery, state: FSMContext, session: As
 )
 async def back_to_dates(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
     """Возврат к выбору даты."""
-    # Очищаем временные данные
     clear_temp_selection(call.from_user.id)
     
-    # Возвращаемся к выбору даты
     data = await state.get_data()
     order_id = data.get('confirm_order_id')
     
@@ -921,9 +855,7 @@ async def back_to_dates(call: CallbackQuery, state: FSMContext, session: AsyncSe
     StateFilter(user_states.UserMenu.confirm_order_comment)
 )
 async def confirm_order_skip_comment(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Пропустить комментарий.
-    """
+    """Пропустить комментарий."""
     data = await state.get_data()
     order_id = data.get('confirm_order_id')
     
@@ -937,22 +869,17 @@ async def confirm_order_skip_comment(call: CallbackQuery, state: FSMContext, ses
     await show_payment(call, state, session)
 
 
-@UserConfirmOrdersRouter.message(
-    StateFilter(user_states.UserMenu.confirm_order_comment)
-)
+@UserConfirmOrdersRouter.message(StateFilter(user_states.UserMenu.confirm_order_comment))
 async def confirm_order_comment(message: Message, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Получен комментарий к заказу.
-    """
+    """Получен комментарий к заказу."""
     data = await state.get_data()
     order_id = data.get('confirm_order_id')
     
     if not order_id:
-        await message.answer("❌ Ошибка: заказ не найден. Попробуйте снова.")
+        await message.answer("❌ Ошибка: заказ не найден")
         await state.clear()
         return
     
-    # Проверка на отмену через текст
     if message.text and message.text.strip() == BUTTON_TEXT["skip_comment"]:
         comment = None
     else:
@@ -972,9 +899,7 @@ async def show_payment(
     state: FSMContext,
     session: AsyncSession
 ) -> None:
-    """
-    Показывает реквизиты для оплаты.
-    """
+    """Показывает реквизиты для оплаты."""
     data = await state.get_data()
     order_id = data.get('confirm_order_id')
     
@@ -986,11 +911,10 @@ async def show_payment(
     order_details = await get_order_with_details(session, order_id)
     
     if not order_details:
-        await target.answer("❌ Заказ не найден в базе данных")
+        await target.answer("❌ Заказ не найден")
         await state.clear()
         return
     
-    # Устанавливаем состояние ожидания фото чека
     await state.set_state(user_states.UserMenu.confirm_order_payment)
     
     text = PAYMENT_TEXT.format(
@@ -1009,14 +933,9 @@ async def show_payment(
     )
 
 
-@UserConfirmOrdersRouter.message(
-    F.photo,
-    StateFilter(user_states.UserMenu.confirm_order_payment)
-)
+@UserConfirmOrdersRouter.message(F.photo, StateFilter(user_states.UserMenu.confirm_order_payment))
 async def confirm_order_payment(message: Message, state: FSMContext, session: AsyncSession) -> None:
-    """
-    Получено фото чека — завершаем оформление заказа.
-    """
+    """Получено фото чека — завершаем оформление заказа."""
     data = await state.get_data()
     order_id = data.get('confirm_order_id')
     comment = data.get('confirm_order_comment')
@@ -1037,22 +956,17 @@ async def confirm_order_payment(message: Message, state: FSMContext, session: As
     delivery_repo = DeliveryRepository(session)
     address_repo = AddressRepository(session)
     
-    # Обновляем комментарий если есть
     if comment:
         await order_repo.update_order_comment(order_id, comment)
     
-    # Сохраняем фото чека
     await order_repo.update_order_photo(order_id, photo_id)
     
-    # Сохраняем часы доставки (если есть)
     if hour_from is not None:
         await order_repo.update_delivery_hours(order_id, hour_from, hour_to)
     
-    # Привязываем дату доставки
     if delivery_id:
         await delivery_repo.assign_to_order(order_id, delivery_id)
     
-    # Переводим заказ в VERIFICATION (теперь он попадёт в активные заказы)
     updated_order = await order_repo.update_order_status(order_id, OrdersStatus.VERIFICATION)
     
     if updated_order:
@@ -1086,7 +1000,7 @@ async def confirm_order_payment(message: Message, state: FSMContext, session: As
         )
         
         buttons = {
-            "🍽 В меню": CALLBACK_BACK_TO_MENU,
+            "🍰 В меню": CALLBACK_BACK_TO_MENU,
             "🏠 Главная": CALLBACK_MAIN_MENU
         }
         
@@ -1101,22 +1015,17 @@ async def confirm_order_payment(message: Message, state: FSMContext, session: As
     else:
         await message.answer("❌ Не удалось подтвердить заказ. Попробуйте позже.")
     
-    # Очищаем временные данные
     clear_temp_selection(message.from_user.id)
     await state.clear()
 
 
-@UserConfirmOrdersRouter.message(
-    StateFilter(user_states.UserMenu.confirm_order_payment)
-)
+@UserConfirmOrdersRouter.message(StateFilter(user_states.UserMenu.confirm_order_payment))
 async def invalid_payment_input(message: Message, state: FSMContext) -> None:
-    """
-    Обработка некорректного ввода при запросе фото чека.
-    """
+    """Обработка некорректного ввода при запросе фото чека."""
     await message.answer(
-        "❓ Пожалуйста, отправьте фото чека об оплате.",
+        "❓ Пожалуйста, отправьте фото чека об оплате",
         reply_markup=get_callback_btns(
-            btns={"🔙 К заказам": CALLBACK_CONFIRM_ORDERS},
+            btns={"🔙 К списку заказов": CALLBACK_CONFIRM_ORDERS},
             sizes=(1,)
         )
     )
@@ -1128,11 +1037,9 @@ async def invalid_payment_input(message: Message, state: FSMContext) -> None:
 
 @UserConfirmOrdersRouter.message(StateFilter(user_states.UserMenu.confirm_order_comment))
 async def invalid_comment_input(message: Message, state: FSMContext) -> None:
-    """
-    Обработка некорректного ввода при запросе комментария.
-    """
+    """Обработка некорректного ввода при запросе комментария."""
     await message.answer(
-        "❓ Пожалуйста, напишите текст комментария или нажмите 'Пропустить'",
+        "❓ Напишите пожелания или нажмите «Без пожеланий»",
         reply_markup=get_callback_btns(
             btns={BUTTON_TEXT["skip_comment"]: CALLBACK_SKIP_COMMENT},
             sizes=(1,)

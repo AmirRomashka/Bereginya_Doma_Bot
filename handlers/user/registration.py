@@ -37,72 +37,72 @@ RegistrationRouter = Router()
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Registration messages — в стиле домашней кухни
+# Registration messages — в стиле домашней пекарни «Берегиня Дома»
 # -----------------------------------------------------------------------------
 
 REGISTRATION_TEXT = {
     'phone_request': """
-📱 <b>Давайте познакомимся!</b>
+🤍 <b>Давайте знакомиться!</b>
 
-Мы готовим для вас с любовью, как для самых дорогих гостей.
-Чтобы вы всегда могли заказать любимые блюда и следить за новинками,
-поделитесь, пожалуйста, своим номером телефона.
+Мы — «Берегиня Дома», пекарня, где всё по-настоящему.
+Здесь пахнет свежим хлебом, ванилью и заботой.
 
-<i>Нажмите на кнопку ниже — это займёт всего секунду 🤍</i>
+Поделитесь номером телефона — так мы сможем готовить для вас самое любимое.
+Нажмите на кнопку ниже, это займёт всего секунду ✨
 """,
-    'loading_start': "🍞 <b>Начинаем регистрацию</b>",
-    'loading_checking': "🔍 Проверяем ваш номер телефона",
+    'loading_start': "🍞 <b>Готовим для вас</b>",
+    'loading_checking': "🔍 Проверяем номер телефона",
     'loading_creating': "📝 Создаём ваш профиль",
-    'loading_almost': "✨ Почти готово",
-    'success_frame1': "🎉 Регистрация завершена!",
-    'success_frame2': "✨ Добро пожаловать в нашу пекарню!",
+    'loading_almost': "✨ Уже почти готово",
+    'success_frame1': "🎉 Всё готово!",
+    'success_frame2': "✨ Добро пожаловать в «Берегиню Дома»!",
     'success_final': """
-<b>✅ Добро пожаловать в нашу домашнюю пекарню!</b>
+🤍 <b>Добро пожаловать в нашу домашнюю пекарню!</b>
 
 🌟 <b>Что дальше?</b>
-• Листайте наше меню — как старую поваренную книгу
-• Выбирайте то, что сегодня хочется
-• Заказывайте с доставкой, как к обеду
+• Открывайте меню — как заглянуть в бабушкину тетрадь с рецептами
+• Выбирайте то, что сегодня хочется к чаю
+• Заказывайте с доставкой — будем рады привезти тепло в ваш дом
 
-<i>Приятного аппетита! Пусть всё будет вкусно, как дома 🥧</i>
+<i>Приятного аппетита! Пусть будет вкусно, как дома 🥧</i>
 """,
     'error_generic': """
 ❌ <b>Что-то пошло не так</b>
 
-Возможно, проблема на кухне. Попробуйте ещё раз чуть позже.
-Если ошибка повторится — напишите нам, мы всё исправим.
+На кухне небольшая заминка. Попробуйте ещё раз чуть позже.
+Если ошибка повторится — напишите нам, и мы всё поправим 🤍
 """,
     'invalid_phone': """
-❌ Пожалуйста, используйте кнопку <b>📱 Отправить контакт</b>
+❍ Пожалуйста, нажмите кнопку <b>📱 Отправить контакт</b>
 
-Так мы точно будем знать, что это вы, и сможем порадовать вас свежей выпечкой!
+Так мы точно будем знать, что это вы, и сможем радовать вас свежей выпечкой!
 """
 }
 
 # -----------------------------------------------------------------------------
-# Birthday messages
+# Birthday messages — про подарки и внимание
 # -----------------------------------------------------------------------------
 
 BIRTHDAY_TEXT = {
     'prompt': """
-🎂 <b>День рождения</b>
+🎂 <b>День рождения — праздник со вкусом!</b>
 
 Расскажите, когда у вас день рождения?
-Мы будем рады поздравить вас 🎉
+Мы будем рады поздравить вас и приготовить что-то особенное 🎉
 
 Введите дату в формате: <i>15.05.1990</i>
 
 """,
     'invalid_format': """
-❌ <b>Неверный формат даты</b>
+❌ <b>Неразборчиво</b>
 
-Пожалуйста, введите дату в формате:
-<i>15.05.1990</i> или <i>15/05/1990</i>
+Пожалуйста, напишите дату понятнее.
+Вот так: <i>15.05.1990</i> или <i>15/05/1990</i>
 """,
-    'too_young': "❌ Возраст должен быть не менее 5 лет",
-    'too_old': "❌ Возраст не может быть больше 120 лет",
-    'future_date': "❌ Дата не может быть в будущем",
-    'canceled': "❌ Ввод даты рождения отменён",
+    'too_young': "❌ Для такого возраста у нас пока нет меню. Попробуйте через пару лет 😊",
+    'too_old': "❌ Уверены? Давайте проверим дату — 120 лет многовато даже для нашей бабушкиной тетради",
+    'future_date': "❌ Вы из будущего? Напишите дату, которая уже была",
+    'canceled': "❌ Хорошо, в другой раз расскажете ✨",
     'saved': """
 🎂 <b>Спасибо, {name}!</b>
 
@@ -111,15 +111,15 @@ BIRTHDAY_TEXT = {
 В этот день мы обязательно поздравим вас и подарим особый подарок!
 А уже сейчас — <b>скидка 20%</b> на первый заказ 🥧
 
-<i>С любовью, ваша пекарня 🤍</i>
+<i>С любовью, «Берегиня Дома» 🤍</i>
 """,
-    'error': "❌ Не удалось сохранить дату рождения. Попробуйте позже.",
+    'error': "❌ Не удалось сохранить дату. Попробуйте позже — мы уже ищем, в чём дело",
     'already_exists': """
-🎂 <b>Дата рождения уже указана!</b>
+🎂 <b>Мы уже знаем!</b>
 
-Вы уже указали свой день рождения — <b>{date}</b> 🎉
+Вы уже рассказывали о своём дне рождения — <b>{date}</b> 🎉
 
-В этот день мы обязательно поздравим вас!
+Ждём праздника, чтобы поздравить вас как следует!
 """
 }
 
@@ -163,7 +163,7 @@ def validate_birth_date(birth_date: date) -> tuple[bool, str]:
 
 
 def format_birth_date(birth_date: date) -> str:
-    """Красиво форматирует дату рождения."""
+    """Красиво форматирует дату рождения в тёплом стиле."""
     months = {
         1: "января", 2: "февраля", 3: "марта", 4: "апреля",
         5: "мая", 6: "июня", 7: "июля", 8: "августа",
@@ -179,7 +179,7 @@ def format_birth_date(birth_date: date) -> str:
 @RegistrationRouter.callback_query(F.data == "registration", StateFilter(user_states.StartState.start))
 async def phone_number_query(call: types.CallbackQuery, state: FSMContext, session: AsyncSession):
     """
-    Запрос номера телефона — как приглашение на чашечку чая.
+    Запрос номера телефона — как приглашение заглянуть на огонёк.
     """
     await state.set_state(user_states.RegistrationState.phone_number)
     await call.answer()
@@ -222,7 +222,7 @@ async def phone_number_query(call: types.CallbackQuery, state: FSMContext, sessi
 )
 async def user_registration(message: types.Message, state: FSMContext, session: AsyncSession):
     """
-    Обработка полученного контакта — как встреча гостя на пороге.
+    Обработка полученного контакта — как встреча дорогого гостя.
     """
     user_id = message.from_user.id
     
@@ -247,7 +247,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
             parse_mode=ParseMode.HTML
         )
         
-        # Анимация процесса регистрации — как ожидание свежего хлеба из печи
+        # Анимация процесса регистрации — как хлеб подходит в печи
         for i, status_text in enumerate(loading_messages):
             await asyncio.sleep(1.2)
             
@@ -255,7 +255,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
             progress_percent = ((i + 1) * 33)
             
             await msg.edit_text(
-                text=f"""<b>🔄 Регистрация</b>
+                text=f"""🤍 <b>Регистрация</b>
 
 {progress} {progress_percent}%
 
@@ -274,7 +274,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
         await message_delete(user_id, last_message_dict)
         
         if result is True:
-            # Финальная анимация — как выпечка готова
+            # Финальная анимация — выпечка готова!
             success_frames = [
                 REGISTRATION_TEXT['success_frame1'],
                 REGISTRATION_TEXT['success_frame2']
@@ -282,7 +282,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
             
             for frame in success_frames:
                 await msg.edit_text(
-                    text=f"""<b>✅ Успешно!</b>
+                    text=f"""🤍 <b>Успешно!</b>
 
 {frame}""",
                     parse_mode=ParseMode.HTML
@@ -293,7 +293,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
             await msg.edit_text(
                 text=REGISTRATION_TEXT['success_final'],
                 reply_markup=get_callback_btns(
-                    btns={"🍽 Перейти в меню": "main_menu"},
+                    btns={"🍰 Перейти в меню": "main_menu"},
                     sizes=(1,)
                 ),
                 parse_mode=ParseMode.HTML
@@ -309,7 +309,7 @@ async def user_registration(message: types.Message, state: FSMContext, session: 
             # Ошибка при регистрации
             if isinstance(result, str):
                 clean_result = escape_html(result)
-                error_text = f"❌ <b>Ошибка при регистрации</b>\n\n{clean_result}"
+                error_text = f"❌ <b>Ошибка</b>\n\n{clean_result}\n\n<i>Давайте попробуем ещё раз 🤍</i>"
             else:
                 error_text = REGISTRATION_TEXT['error_generic']
             
@@ -362,7 +362,7 @@ async def invalid_phone_input(message: types.Message, state: FSMContext):
 @RegistrationRouter.message(Command("set_birthday"))
 async def request_birth_date(message: types.Message, state: FSMContext, session: AsyncSession):
     """
-    Запрос даты рождения — как подарок для именинников.
+    Запрос даты рождения — как секретный ингредиент для особого подарка.
     """
     await message.delete()
     
@@ -391,7 +391,7 @@ async def request_birth_date(message: types.Message, state: FSMContext, session:
 @RegistrationRouter.message(StateFilter(user_states.RegistrationState.birth_date))
 async def save_birth_date(message: types.Message, state: FSMContext, session: AsyncSession):
     """
-    Сохранение даты рождения.
+    Сохранение даты рождения — записываем в семейную книгу рецептов.
     """
     # Проверяем, зарегистрирован ли пользователь (на случай, если состояние осталось)
     user = await get_user_orm(session, message.from_user.id)
@@ -436,7 +436,7 @@ async def save_birth_date(message: types.Message, state: FSMContext, session: As
                 name=message.from_user.full_name,
                 date=formatted_date
             ),
-            buttons={"🍽 Перейти в меню": "user_catalog"},
+            buttons={"🍰 Перейти в меню": "user_catalog"},
             sizes=[1],
             parse_mode="HTML"
         )
@@ -454,7 +454,7 @@ async def save_birth_date(message: types.Message, state: FSMContext, session: As
 @RegistrationRouter.callback_query(F.data == "cancel_birth_date")
 async def cancel_birth_date(call: types.CallbackQuery, state: FSMContext, session: AsyncSession):
     """
-    Отмена ввода даты рождения.
+    Отмена ввода даты рождения — ничего страшного, расскажете в следующий раз.
     """
     await state.clear()
     await send_clean_message(

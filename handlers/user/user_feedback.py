@@ -35,31 +35,33 @@ UserFeedbackRouter = Router(name="user_feedback")
 CALLBACK_FEEDBACK = "user_feedback"
 
 FEEDBACK_REQUEST_TEXT = """
-🍰 <b>Поделитесь впечатлениями</b>
+🤍 <b>Расскажите, как вам у нас?</b>
 
-Напишите всё, что думаете о наших десертах:
-• Что понравилось?
-• Что можно улучшить?
-• Ваши пожелания
+Для нас важно каждое ваше слово — оно помогает становиться лучше и вкуснее.
 
-<i>Мы очень ценим ваше мнение 🤍</i>
+Напишите, что думаете:
+• Что особенно понравилось?
+• Что можно сделать ещё лучше?
+• Есть ли пожелания?
+
+<i>Мы читаем каждый отзыв и берём его на кухню 🤍</i>
 
 Чтобы отменить — нажмите "❌ Отмена"
 """
 
 FEEDBACK_THANK_YOU = """
-✨ <b>Спасибо за ваш отзыв!</b>
+✨ <b>Сердечное спасибо!</b>
 
-Ваше мнение очень важно для нас.
-Мы становимся лучше благодаря вам 🤍
+Ваш отзыв уже на нашей кухне — мы обязательно его изучим и учтём.
+Вы помогаете «Берегине Дома» становиться уютнее и вкуснее 🤍
 
-<i>Возвращаемся в главное меню...</i>
+<i>Возвращаемся в меню...</i>
 """
 
 FEEDBACK_CANCELED = """
-❌ Отправка отзыва отменена.
+❌ Хорошо, в другой раз.
 
-Вы всегда можете оставить отзыв позже в главном меню 🤍
+Вы всегда сможете оставить отзыв в главном меню — мы будем ждать 🤍
 """
 
 
@@ -98,7 +100,7 @@ async def feedback_text_received(message: Message, state: FSMContext, session: A
     if len(feedback_text) < 5:
         await send_clean_message(
             target=message,
-            text="❌ Пожалуйста, напишите отзыв подлиннее (минимум 5 символов). Нам правда важно ваше мнение!",
+            text="❌ Напишите чуть подробнее — нам правда важно каждое слово (минимум 5 символов) 🤍",
             buttons={"❌ Отмена": "feedback_cancel"},
             sizes=[1],
             parse_mode="HTML"
@@ -108,7 +110,7 @@ async def feedback_text_received(message: Message, state: FSMContext, session: A
     if len(feedback_text) > 2000:
         await send_clean_message(
             target=message,
-            text="❌ Отзыв слишком длинный. Пожалуйста, сократите до 2000 символов.",
+            text="❌ Очень душевно, но давайте чуть короче? Попробуйте уложиться в 2000 символов ✨",
             buttons={"❌ Отмена": "feedback_cancel"},
             sizes=[1],
             parse_mode="HTML"
@@ -130,15 +132,15 @@ async def feedback_text_received(message: Message, state: FSMContext, session: A
         await send_clean_message(
             target=message,
             text=FEEDBACK_THANK_YOU,
-            buttons={"🏠 Главное меню": "main_menu"},
+            buttons={"🍰 Главное меню": "main_menu"},
             sizes=[1],
             parse_mode="HTML"
         )
     else:
         await send_clean_message(
             target=message,
-            text="❌ Не удалось сохранить отзыв. Попробуйте позже.",
-            buttons={"🏠 Главное меню": "main_menu"},
+            text="❌ Что-то пошло не так — отзыв не сохранился. Попробуйте ещё раз или напишите нам напрямую 🤍",
+            buttons={"🍰 Главное меню": "main_menu"},
             sizes=[1],
             parse_mode="HTML"
         )
@@ -157,7 +159,7 @@ async def feedback_cancel(call: CallbackQuery, state: FSMContext) -> None:
     await send_clean_message(
         target=call,
         text=FEEDBACK_CANCELED,
-        buttons={"🏠 Главное меню": "main_menu"},
+        buttons={"🍰 Главное меню": "main_menu"},
         sizes=[1],
         parse_mode="HTML"
     )

@@ -139,7 +139,7 @@ async def start(event: Union[types.Message, types.CallbackQuery],
         "ℹ️ О нас": CALLBACK_ABOUT_US_FROM_START
     }
         
-    relative_path = "image/test_screen.jpg"
+    relative_path = "image/user_start.png"
     media_path = WORK_DIR / relative_path
     media = FSInputFile(media_path)
     msg = await message.answer_photo(

@@ -45,10 +45,10 @@ CALLBACK_BACK_TO_MENU = "back_to_user_menu"
 CALLBACK_MAIN_MENU = "main_menu"
 
 # -----------------------------------------------------------------------------
-# Button text constants
+# Button text constants — понятные и тёплые
 # -----------------------------------------------------------------------------
 BUTTON_TEXT = {
-    "back_to_menu": "🍽 В меню",
+    "back_to_menu": "🍰 В меню",
     "main_menu": "🏠 Главная",
     "back_to_orders": "📋 К заказам"
 }
@@ -61,31 +61,31 @@ ORDERS_HISTORY_EMPTY = """
 📭 <b>История заказов</b>
 
 Вы ещё ничего не заказывали.
-Загляните в наше <b>меню</b> — там столько всего вкусного!
+Загляните в меню — там столько всего вкусного! 🤍
 
-<i>Первый заказ уже ждёт вас 🤍</i>
+<i>Первый заказ уже ждёт вас 🥐</i>
 """
 
 ORDERS_HISTORY_TEXT = """
-📋 <b>Ваши заказы</b>
+📋 <b>Что вы заказывали раньше</b>
 
-Вот что вы заказывали у нас:
+Вот наши любимые блюда, которые вы уже пробовали:
 """
 
 ORDER_ITEM_FORMAT = """
 {number}. Заказ №{order_id}
    📅 {date}
    💰 {total} ₽
-   📊 Статус: {status}
+   📊 {status}
 """
 
 ORDER_DETAIL_TEMPLATE = """
 📦 <b>ЗАКАЗ №{order_id}</b>
 {'━' * 35}
 
-📅 <b>Дата оформления:</b> {date}
+📅 <b>Оформлен:</b> {date}
 📊 <b>Статус:</b> {status}
-💬 <b>Комментарий:</b> {comment}
+💬 <b>Пожелания:</b> {comment}
 
 {time_section}
 {'━' * 35}
@@ -98,7 +98,7 @@ ORDER_DETAIL_TEMPLATE = """
 
 ORDER_ITEM_DETAIL = """
 {number}. <b>{name}</b>
-   🥄 {quantity} × {price}₽ = <b>{subtotal}₽</b>
+   🥄 {quantity} шт × {price}₽ = <b>{subtotal}₽</b>
 """
 
 
@@ -107,16 +107,7 @@ ORDER_ITEM_DETAIL = """
 # =============================================================================
 
 def format_delivery_time(hour_from: Optional[int], hour_to: Optional[int]) -> str:
-    """
-    Форматирует время доставки для отображения в истории заказов.
-    
-    Args:
-        hour_from: Час начала (0-23)
-        hour_to: Час окончания (0-23)
-    
-    Returns:
-        str: Отформатированное время или пустая строка
-    """
+    """Форматирует время доставки для отображения в истории заказов."""
     if hour_from is None:
         return ""
     
@@ -126,23 +117,13 @@ def format_delivery_time(hour_from: Optional[int], hour_to: Optional[int]) -> st
 
 
 def format_comment(comment: Optional[str]) -> str:
-    """
-    Форматирует комментарий/пожелания для отображения.
-    
-    Args:
-        comment: Текст комментария
-    
-    Returns:
-        str: Отформатированный комментарий
-    """
+    """Форматирует комментарий/пожелания для отображения."""
     if not comment:
-        return "💬 <i>Нет комментария</i>"
+        return "💬 <i>Без пожеланий</i>"
     
-    # Если комментарий длинный, обрезаем с многоточием
     if len(comment) > 150:
         comment = comment[:147] + "..."
     
-    # Экранируем HTML-спецсимволы
     comment = comment.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     
     return f"💬 {comment}"
@@ -152,9 +133,9 @@ def format_order_status(status: str) -> str:
     """Форматирует статус заказа для отображения в истории."""
     status_map = {
         OrdersStatus.ASSEMBLY.value: "🛒 В корзине",
-        OrdersStatus.VERIFICATION.value: "🔄 Ожидает подтверждения",
-        OrdersStatus.ACCEPTED.value: "👨‍🍳 Готовится",
-        OrdersStatus.READY_FOR_DELIVERY.value: "🚚 Готов к получению",
+        OrdersStatus.VERIFICATION.value: "🔄 Ожидает проверки",
+        OrdersStatus.ACCEPTED.value: "👨‍🍳 Готовился",
+        OrdersStatus.READY_FOR_DELIVERY.value: "🚚 Готов к выдаче",
         OrdersStatus.COMPLETED.value: "✅ Выполнен",
         OrdersStatus.REFUSED.value: "❌ Отменён"
     }
@@ -162,10 +143,7 @@ def format_order_status(status: str) -> str:
 
 
 def format_order_date(date: datetime) -> str:
-    """
-    Форматирует дату заказа для истории.
-    Показывает только дату, без времени.
-    """
+    """Форматирует дату заказа для истории."""
     return date.strftime("%d.%m.%Y")
 
 
@@ -184,7 +162,6 @@ async def get_order_details(session: AsyncSession, order_id: int) -> Dict[str, A
     if not order_details:
         return None
     
-    # Добавляем время доставки из модели Order
     order = await order_repo.get_order_by_id(order_id)
     if order:
         order_details['delivery_hour_from'] = getattr(order, 'delivery_hour_from', None)
@@ -199,9 +176,7 @@ async def get_order_details(session: AsyncSession, order_id: int) -> Dict[str, A
 
 @UserOrdersRouter.callback_query(F.data == CALLBACK_ORDERS_HISTORY)
 async def show_orders_history(call: CallbackQuery, session: AsyncSession) -> None:
-    """
-    Показывает историю заказов пользователя.
-    """
+    """Показывает историю заказов пользователя."""
     user_id = call.from_user.id
     orders = await get_user_completed_orders(session, user_id)
     order_repo = OrderRepository(session=session, user_id=user_id)
@@ -211,7 +186,7 @@ async def show_orders_history(call: CallbackQuery, session: AsyncSession) -> Non
             target=call,
             text=ORDERS_HISTORY_EMPTY,
             buttons={
-                "🍽 В меню": CALLBACK_BACK_TO_MENU,
+                "🍰 В меню": CALLBACK_BACK_TO_MENU,
                 "🏠 Главная": CALLBACK_MAIN_MENU
             },
             sizes=[1, 1],
@@ -222,7 +197,7 @@ async def show_orders_history(call: CallbackQuery, session: AsyncSession) -> Non
     buttons = {}
     sizes = []
     
-    for i, order in enumerate(orders[:10], 1):  # Показываем последние 10
+    for i, order in enumerate(orders[:10], 1):
         total = await order_repo.get_order_total(order.order_id)
         date = format_order_date(order.created)
         status = format_order_status(order.order_status)
@@ -245,9 +220,7 @@ async def show_orders_history(call: CallbackQuery, session: AsyncSession) -> Non
 
 @UserOrdersRouter.callback_query(F.data.startswith(CALLBACK_ORDER_DETAIL))
 async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
-    """
-    Показывает детальную информацию о заказе из истории.
-    """
+    """Показывает детальную информацию о заказе из истории."""
     order_id = int(call.data.split("_")[2])
     
     order_details = await get_order_details(session, order_id)
@@ -256,7 +229,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
         await call.answer("❌ Заказ не найден", show_alert=True)
         return
     
-    # Формируем список блюд с нумерацией
     items_text = ""
     for i, item in enumerate(order_details['items'], 1):
         items_text += ORDER_ITEM_DETAIL.format(
@@ -267,7 +239,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
             subtotal=item['subtotal']
         )
     
-    # Формируем секцию времени (если есть)
     time_section = ""
     if order_details.get('delivery_hour_from'):
         time_section = format_delivery_time(
@@ -275,7 +246,6 @@ async def show_order_detail(call: CallbackQuery, session: AsyncSession) -> None:
             order_details['delivery_hour_to']
         )
     
-    # Формируем полный текст
     text = ORDER_DETAIL_TEMPLATE.format(
         order_id=order_details['order_id'],
         date=format_order_date(order_details['created']),
