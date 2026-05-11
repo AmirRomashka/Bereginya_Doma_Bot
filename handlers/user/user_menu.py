@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Tuple
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery
 
 from icecream import ic
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -157,34 +157,6 @@ def format_dish_detail(dish: Dict[str, Any]) -> str:
     )
 
 
-def create_inline_keyboard(buttons: Dict[str, str], sizes: List[int]) -> InlineKeyboardMarkup:
-    """
-    Создаёт InlineKeyboardMarkup с правильными размерами рядов.
-    
-    Args:
-        buttons: Словарь {текст_кнопки: callback_data}
-        sizes: Список количества кнопок в каждом ряду
-    
-    Returns:
-        InlineKeyboardMarkup с настроенными рядами
-    """
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[])
-    button_items = list(buttons.items())
-    idx = 0
-    
-    for row_size in sizes:
-        row = []
-        for _ in range(row_size):
-            if idx < len(button_items):
-                text, callback = button_items[idx]
-                row.append(InlineKeyboardButton(text=text, callback_data=callback))
-                idx += 1
-        if row:  # добавляем только непустые ряды
-            keyboard.inline_keyboard.append(row)
-    
-    return keyboard
-
-
 def create_categories_buttons(
     categories: List[Dict[str, Any]]
 ) -> Tuple[Dict[str, str], List[int]]:
@@ -278,14 +250,11 @@ def create_dishes_buttons(
     
     # Группируем блюда в пары
     dish_count = len(dishes)
-    i = 0
-    while i < dish_count:
+    for i in range(0, dish_count, 2):
         if i + 1 < dish_count:
             sizes.append(2)  # пара
-            i += 2
         else:
             sizes.append(1)  # последнее непарное
-            i += 1
     
     # Кнопка "Назад" — всегда отдельный ряд
     buttons[BTN_BACK] = CALLBACK_BACK_TO_MENU
@@ -335,16 +304,12 @@ async def show_categories(call: CallbackQuery, state: FSMContext, session: Async
     
     ic("Button layout sizes:", sizes)
     
-    # Создаём клавиатуру с правильными размерами рядов
-    keyboard = create_inline_keyboard(buttons, sizes)
-    
-    # Обновляем сообщение
-    await call.message.edit_text(
+    await send_clean_message(
+        target=call,
         text=text,
-        reply_markup=keyboard,
-        parse_mode="HTML"
+        buttons=buttons,
+        sizes=sizes
     )
-    await call.answer()
 
 
 # -----------------------------------------------------------------------------
@@ -375,15 +340,12 @@ async def show_category_dishes(call: CallbackQuery, state: FSMContext, session: 
     else:
         text = DISH_SELECT_TEXT.format(category_name=category_name)
     
-    # Создаём клавиатуру с правильными размерами рядов
-    keyboard = create_inline_keyboard(buttons, sizes)
-    
-    await call.message.edit_text(
+    await send_clean_message(
+        target=call,
         text=text,
-        reply_markup=keyboard,
-        parse_mode="HTML"
+        buttons=buttons,
+        sizes=sizes
     )
-    await call.answer()
 
 
 @UserMenuRouter.callback_query(F.data.startswith(CALLBACK_DISH_PREFIX))
@@ -394,14 +356,12 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
     dish = await get_dish_by_id_orm(session=session, dish_id=dish_id)
     
     if not dish:
-        buttons, sizes = {BTN_BACK_TO_CATEGORIES: CALLBACK_BACK_TO_MENU}, [1]
-        keyboard = create_inline_keyboard(buttons, sizes)
-        await call.message.edit_text(
+        await send_clean_message(
+            target=call,
             text="❌ Блюдо не найдено",
-            reply_markup=keyboard,
-            parse_mode="HTML"
+            buttons={BTN_BACK_TO_CATEGORIES: CALLBACK_BACK_TO_MENU},
+            sizes=[1]
         )
-        await call.answer()
         return
     
     ic(f"Displaying dish for user: {dish['name']}")
@@ -413,25 +373,21 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
         category_id=dish['category_id']
     )
     
-    keyboard = create_inline_keyboard(buttons, sizes)
-    
     if dish.get('image'):
-        # Если есть фото, редактируем текст и клавиатуру (фото нельзя изменить через edit)
-        # В этом случае лучше отправить новое сообщение
-        await call.message.delete()
-        await call.message.answer_photo(
-            photo=dish['image'],
-            caption=text,
-            reply_markup=keyboard,
-            parse_mode="HTML"
+        await send_clean_message(
+            target=call,
+            text=text,
+            buttons=buttons,
+            sizes=sizes,
+            photo=dish['image']
         )
     else:
-        await call.message.edit_text(
+        await send_clean_message(
+            target=call,
             text=text,
-            reply_markup=keyboard,
-            parse_mode="HTML"
+            buttons=buttons,
+            sizes=sizes
         )
-    await call.answer()
 
 
 # -----------------------------------------------------------------------------
@@ -441,15 +397,8 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
 @UserMenuRouter.callback_query(F.data == CALLBACK_ORDERS)
 async def show_orders(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
     """История заказов — как заметки на кухне."""
-    buttons = {
-        BTN_CART: CALLBACK_CART,
-        BTN_MAIN_MENU: CALLBACK_MAIN_MENU
-    }
-    sizes = [2]  # две кнопки в ряду
-    
-    keyboard = create_inline_keyboard(buttons, sizes)
-    
-    await call.message.edit_text(
+    await send_clean_message(
+        target=call,
         text="""
 📋 <b>Ваши заказы</b>
 
@@ -458,7 +407,9 @@ async def show_orders(call: CallbackQuery, state: FSMContext, session: AsyncSess
 
 <i>Скоро эта страница наполнится любимыми блюдами 🤍</i>
         """,
-        reply_markup=keyboard,
-        parse_mode="HTML"
+        buttons={
+            BTN_CART: CALLBACK_CART,
+            BTN_MAIN_MENU: CALLBACK_MAIN_MENU
+        },
+        sizes=[2]
     )
-    await call.answer()
