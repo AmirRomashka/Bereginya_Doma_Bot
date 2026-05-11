@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Tuple
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 from icecream import ic
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -157,6 +157,34 @@ def format_dish_detail(dish: Dict[str, Any]) -> str:
     )
 
 
+def create_inline_keyboard(buttons: Dict[str, str], sizes: List[int]) -> InlineKeyboardMarkup:
+    """
+    Создаёт InlineKeyboardMarkup с правильными размерами рядов.
+    
+    Args:
+        buttons: Словарь {текст_кнопки: callback_data}
+        sizes: Список количества кнопок в каждом ряду
+    
+    Returns:
+        InlineKeyboardMarkup с настроенными рядами
+    """
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[])
+    button_items = list(buttons.items())
+    idx = 0
+    
+    for row_size in sizes:
+        row = []
+        for _ in range(row_size):
+            if idx < len(button_items):
+                text, callback = button_items[idx]
+                row.append(InlineKeyboardButton(text=text, callback_data=callback))
+                idx += 1
+        if row:  # добавляем только непустые ряды
+            keyboard.inline_keyboard.append(row)
+    
+    return keyboard
+
+
 def create_categories_buttons(
     categories: List[Dict[str, Any]]
 ) -> Tuple[Dict[str, str], List[int]]:
@@ -197,7 +225,8 @@ def create_categories_buttons(
         sizes.append(1)  # одна кнопка в ряду
     
     # 2. Группируем короткие кнопки в пары
-    for i in range(0, len(short_buttons), 2):
+    i = 0
+    while i < len(short_buttons):
         label1, callback1 = short_buttons[i]
         buttons[label1] = callback1
         
@@ -206,12 +235,13 @@ def create_categories_buttons(
             label2, callback2 = short_buttons[i + 1]
             buttons[label2] = callback2
             sizes.append(2)  # ряд из двух кнопок
+            i += 2
         else:
             # Нечётное количество коротких кнопок — последняя занимает отдельный ряд
             sizes.append(1)
+            i += 1
     
     # 3. Добавляем служебные кнопки
-    # Корзина + Заказы — пробуем сделать парой, если обе короткие
     cart_label = BTN_CART
     orders_label = BTN_ORDERS
     
@@ -248,11 +278,14 @@ def create_dishes_buttons(
     
     # Группируем блюда в пары
     dish_count = len(dishes)
-    for i in range(0, dish_count, 2):
+    i = 0
+    while i < dish_count:
         if i + 1 < dish_count:
             sizes.append(2)  # пара
+            i += 2
         else:
             sizes.append(1)  # последнее непарное
+            i += 1
     
     # Кнопка "Назад" — всегда отдельный ряд
     buttons[BTN_BACK] = CALLBACK_BACK_TO_MENU
@@ -302,12 +335,16 @@ async def show_categories(call: CallbackQuery, state: FSMContext, session: Async
     
     ic("Button layout sizes:", sizes)
     
-    await send_clean_message(
-        target=call,
+    # Создаём клавиатуру с правильными размерами рядов
+    keyboard = create_inline_keyboard(buttons, sizes)
+    
+    # Обновляем сообщение
+    await call.message.edit_text(
         text=text,
-        buttons=buttons,
-        sizes=sizes
+        reply_markup=keyboard,
+        parse_mode="HTML"
     )
+    await call.answer()
 
 
 # -----------------------------------------------------------------------------
@@ -338,12 +375,15 @@ async def show_category_dishes(call: CallbackQuery, state: FSMContext, session: 
     else:
         text = DISH_SELECT_TEXT.format(category_name=category_name)
     
-    await send_clean_message(
-        target=call,
+    # Создаём клавиатуру с правильными размерами рядов
+    keyboard = create_inline_keyboard(buttons, sizes)
+    
+    await call.message.edit_text(
         text=text,
-        buttons=buttons,
-        sizes=sizes
+        reply_markup=keyboard,
+        parse_mode="HTML"
     )
+    await call.answer()
 
 
 @UserMenuRouter.callback_query(F.data.startswith(CALLBACK_DISH_PREFIX))
@@ -354,12 +394,14 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
     dish = await get_dish_by_id_orm(session=session, dish_id=dish_id)
     
     if not dish:
-        await send_clean_message(
-            target=call,
+        buttons, sizes = {BTN_BACK_TO_CATEGORIES: CALLBACK_BACK_TO_MENU}, [1]
+        keyboard = create_inline_keyboard(buttons, sizes)
+        await call.message.edit_text(
             text="❌ Блюдо не найдено",
-            buttons={BTN_BACK_TO_CATEGORIES: CALLBACK_BACK_TO_MENU},
-            sizes=[1]
+            reply_markup=keyboard,
+            parse_mode="HTML"
         )
+        await call.answer()
         return
     
     ic(f"Displaying dish for user: {dish['name']}")
@@ -371,21 +413,25 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
         category_id=dish['category_id']
     )
     
+    keyboard = create_inline_keyboard(buttons, sizes)
+    
     if dish.get('image'):
-        await send_clean_message(
-            target=call,
-            text=text,
-            buttons=buttons,
-            sizes=sizes,
-            photo=dish['image']
+        # Если есть фото, редактируем текст и клавиатуру (фото нельзя изменить через edit)
+        # В этом случае лучше отправить новое сообщение
+        await call.message.delete()
+        await call.message.answer_photo(
+            photo=dish['image'],
+            caption=text,
+            reply_markup=keyboard,
+            parse_mode="HTML"
         )
     else:
-        await send_clean_message(
-            target=call,
+        await call.message.edit_text(
             text=text,
-            buttons=buttons,
-            sizes=sizes
+            reply_markup=keyboard,
+            parse_mode="HTML"
         )
+    await call.answer()
 
 
 # -----------------------------------------------------------------------------
@@ -395,8 +441,15 @@ async def show_dish_detail(call: CallbackQuery, state: FSMContext, session: Asyn
 @UserMenuRouter.callback_query(F.data == CALLBACK_ORDERS)
 async def show_orders(call: CallbackQuery, state: FSMContext, session: AsyncSession) -> None:
     """История заказов — как заметки на кухне."""
-    await send_clean_message(
-        target=call,
+    buttons = {
+        BTN_CART: CALLBACK_CART,
+        BTN_MAIN_MENU: CALLBACK_MAIN_MENU
+    }
+    sizes = [2]  # две кнопки в ряду
+    
+    keyboard = create_inline_keyboard(buttons, sizes)
+    
+    await call.message.edit_text(
         text="""
 📋 <b>Ваши заказы</b>
 
@@ -405,9 +458,7 @@ async def show_orders(call: CallbackQuery, state: FSMContext, session: AsyncSess
 
 <i>Скоро эта страница наполнится любимыми блюдами 🤍</i>
         """,
-        buttons={
-            BTN_CART: CALLBACK_CART,
-            BTN_MAIN_MENU: CALLBACK_MAIN_MENU
-        },
-        sizes=[2]
+        reply_markup=keyboard,
+        parse_mode="HTML"
     )
+    await call.answer()
